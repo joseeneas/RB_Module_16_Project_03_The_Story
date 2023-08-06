@@ -10,6 +10,8 @@ var countryTableGDP     = [];
 var countryTableBRT     = [];
 var countryTablePOP     = [];
 var countryTablePOPG100 = [];
+var countryTableF15_T64 = [];
+var countryTableE01     = [];
 var tableDataGDP        = []
 var tableDataBRT        = [];
 var tableDataPOP        = [];
@@ -40,15 +42,14 @@ d3.json(urlGDP).then (function(GDPdata) {
         Country = GDPdata[i].Country;
         if (Country == "United_States") {
             countryTableYearGDP[j] = GDPdata[i].Year;
-            countryTableGDP[j]    = GDPdata[i].GDP;
-            tableDataGDP[j]       = {"Year" : countryTableYearGDP[j], "GDP" : countryTableGDP[j] };
-            j                     = j + 1;
+            countryTableGDP[j]     = GDPdata[i].GDP;
+            tableDataGDP[j]        = {"Year" : countryTableYearGDP[j], "GDP" : countryTableGDP[j] };
+            j                      = j + 1;
         }
     }
     console.log('tableDataGDP.length',tableDataGDP.length);
     console.log(tableDataGDP);
     tabulate('#div1',tableDataGDP, ['Year', 'GDP']);
-
 
     let barGraph = [{
       x           : countryTableYearGDP,
@@ -57,7 +58,7 @@ d3.json(urlGDP).then (function(GDPdata) {
       name        : "GDP/Year",
       type        : "bar",
       orientation : "v",
-      transforms  : [{ type : 'sort', target : 'y', order : 'descending'}],
+      transforms  : [{ type : 'sort', target : 'y'}],
       marker      : { color : colorGradient}}];
       let layout1 = { title        : "USA GDP"  , 
                       plot_bgcolor : "Lightskyblue", 
@@ -89,12 +90,12 @@ d3.json(urlBRT).then (function(BRTdata) {
     name        : "Birth Rate/Year",
     type        : "bar",
     orientation : "v",
-    transforms  : [{ type : 'sort', target : 'y', order : 'descending'}],
+    transforms  : [{ type : 'sort', target : 'y'}],
     marker      : { color : colorGradient}}];
     let layout1 = { title        : "USA Birth Rate"  , 
                     plot_bgcolor : "Lightskyblue", 
                     paper_bgcolor: "Lightskyblue"};
-    Plotly.newPlot("div4"   ,    barGraph, layout1);
+  Plotly.newPlot("div4"   ,    barGraph, layout1);
 
 });
 
@@ -106,75 +107,67 @@ d3.json(urlPOP).then (function(POPdata) {
           countryTableYearPOP[l] = POPdata[i].Year;
           countryTablePOP[l]     = POPdata[i].pop;
           countryTablePOPG100[l] = POPdata[i].pop_g100;
-          tableDataPOP[l]        = {"Year" : countryTableYearPOP[l], "Population" : countryTablePOP[l] , 'POPG100' : countryTablePOPG100[l]};
+          countryTableF15_T64[l] = POPdata[i].pop_f15_t64;
+          countryTableE01[l]     = POPdata[i].pop_e01;
+          tableDataPOP[l]        = {'Year'       : countryTableYearPOP[l], 
+                                    "Population" : countryTablePOP[l]    , 
+                                    'POPG100'    : countryTablePOPG100[l],
+                                    'POPF15_T64' : countryTableF15_T64[l],
+                                    'POPE01'     : countryTableE01[l]
+                                  };
           l                      = l + 1;
       }
   }
   console.log('tabeDataPOP.length',tableDataPOP.length);
   console.log(tableDataPOP);
-  tabulate('#div5',tableDataPOP, ['Year', 'Population', 'POPG100']);
+  tabulate('#div5',tableDataPOP, ['Year', 'Population', 'POPG100','POPF15_T64','POPE01']);
   
   var Population = {
-    x: countryTableYearPOP,
-    y: countryTablePOP,
-    type: 'line',
-    mode: 'lines',
-    name : 'Population'
+    x      : countryTableYearPOP,
+    y      : countryTablePOP,
+    type   : 'line',
+    mode   : 'lines',
+    name   : 'Population',
+    marker : { color : colorGradient}
   };
   
   var PopulationG100 = {
-    x: countryTableYearPOP,
-    y: countryTablePOPG100,
-    xaxis: 'x2',
-    yaxis: 'y2',
-    type: 'line',
-    mode: 'lines',
-    name: 'Population over 100'
+    x      : countryTableYearPOP,
+    y      : countryTablePOPG100,
+    type   : 'line',
+    mode   : 'lines',
+    name   : 'Population over 100',
+    marker : { color : colorGradient}
   };
   
-  var data = [Population, PopulationG100];
+  var PopulationF15T64 = {
+    x      : countryTableYearPOP,
+    y      : countryTableF15_T64,
+    type   : 'line',
+    mode   : 'lines',
+    name   : 'Population from 15 to 64',
+    marker : { color : colorGradient}
+  };
+
+  var PopulationE01 = {
+    x      : countryTableYearPOP,
+    y      : countryTableE01,
+    type   : 'line',
+    mode   : 'lines',
+    name   : 'Population exact 1',
+    marker : { color : colorGradient}
+  };
+  var data = [Population, PopulationG100, PopulationF15T64, PopulationE01] ;
   
   var layout = {
-    grid: {rows: 1, columns: 2 ,pattern: 'independent',
-    title        : "USA Population", 
-    plot_bgcolor : "Lightskyblue", 
-    paper_bgcolor: "Lightskyblue"}
-  };
-  
+    grid          : {rows: 1, columns: 1 ,pattern: 'independent'},
+    title         : "USA Population",
+    plot_bgcolor  : "Lightskyblue", 
+    paper_bgcolor : "Lightskyblue",
+    xaxis         : {type: 'log',autorange: true},
+    yaxis         : {type: 'log',autorange: true} };
   Plotly.newPlot('div6', data, layout);
-
-/*
-  let barGraph = [{
-    x           : countryTableYearPOP,
-    y           : countryTablePOP,
-    text        : countryTableYearPOP,
-    name        : "Population/Year",
-    type        : "bar",
-    orientation : "v",
-    transforms  : [{ type : 'sort', target : 'y', order : 'descending'}],
-    marker      : { color : colorGradient}}];
-    let layout1 = { title        : "USA Population"  , 
-                    plot_bgcolor : "Lightskyblue", 
-                    paper_bgcolor: "Lightskyblue"};
-    Plotly.newPlot("div6"   ,    barGraph, layout1);
-
-    let barline = [{
-      x           : countryTableYearPOP,
-      y           : countryTablePOPG100,
-      text        : countryTableYearPOP,
-      name        : "Population/Year",
-      type        : "line",
-      orientation : "v",
-      transforms  : [{ type : 'sort', target : 'y', order : 'descending'}],
-      marker      : { color : colorGradient}}];
-      let layout2 = { title        : "USA Population"  , 
-                      plot_bgcolor : "Lightskyblue", 
-                      paper_bgcolor: "Lightskyblue"};
-      Plotly.newPlot("div6"   ,    barline, layout1);
-*/
 });
-
-
 
 function tabulate(div,data, columns) {
       var table = d3.select(div).append('table').style('border', '1px solid #000000');
