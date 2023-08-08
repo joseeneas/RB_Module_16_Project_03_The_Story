@@ -28,12 +28,9 @@ function getYear() {
       d3.select("#div2").selectAll("table").remove();
       tabulate('#div2',graphTable, ['Country', 'GDP']);
       let barGraph = [{
-        x           : countryCodes,
-        y           : countryGDP,
-        text        : countryNames,
-        name        : "GDP/World",
-        type        : "bar",
-        orientation : "v",
+        x           : countryCodes, y           : countryGDP,
+        text        : countryNames, name        : "GDP/World",
+        type        : "bar"       , orientation : "v",
         marker      : { color         : "darkgreen"}}];
         let layout  = { title         : "World GDP " + parmYear  , 
                         xaxis         : { linecolor: 'black', linewidth: 1, mirror: true },
@@ -48,18 +45,18 @@ function getYear() {
 function getCountryCode() {
   // COUNTRY GDP DATA AND GRAPH STARTS HERE
   d3.json(urlGDP).then (function(GDPdata) { 
-    var parmCountry    = 0;
+    var parmCountry    = "";
     var i              = 0;
     var j              = 0;
     var countryCode    = "";
     var countryName    = "";
     var countryYears   = [];
     var countryGDP     = [];
-    var countryBRT     = [];
     var countryPOP     = [];
-    var countryPOPG100 = [];
-    var countryF15_T64 = [];
     var countryE01     = [];
+    var countryF15_T64 = [];
+    var countryF60_T69 = [];
+    var countryPOPG100 = [];
     var graphTable     = [];
     parmCountry = d3.select("#countryCodeGraph2").property("value");
     console.log('get country code: ' + parmCountry);
@@ -77,12 +74,9 @@ function getCountryCode() {
       d3.select("#div6").selectAll("table").remove();      
       tabulate('#div6',graphTable, ['Year', 'GDP']);
       let barGraph = [{
-        x           : countryYears,
-        y           : countryGDP,
-        text        : countryYears,
-        name        : "GDP/Year",
-        type        : "line",
-        orientation : "v",
+        x           : countryYears, y           : countryGDP,
+        text        : countryYears, name        : "GDP/Year",
+        type        : "line"      , orientation : "v",
         marker      : { color          : 'darkgreen'}}];
         let layout  = { title          : countryName + " GDP"  , 
                          xaxis         : { linecolor: 'black', linewidth: 1, mirror: true },
@@ -114,18 +108,15 @@ function getCountryCode() {
           d3.select("#div10").selectAll("table").remove();
           tabulate('#div10',graphTable, ['Year', 'Birth_Rate']);
           let barGraph = [{
-            x           : countryYears,
-            y           : countryBRT,
-            text        : countryYears,
-            name        : "Birth Rate/Year",
-            type        : "line",
-            orientation : "V",
+            x           : countryYears, y           : countryBRT,
+            text        : countryYears, name        : "Birth Rate/Year",
+            type        : "line"      , orientation : "V",
             marker      : { color : "blue"}}];
-            let layout  = { title : countryName + " Birth Rate"  , 
-                            xaxis : { linecolor: 'black', linewidth: 1, mirror: true },
-                            yaxis : { linecolor: 'black', linewidth: 1, mirror: true },
-                            plot_bgcolor : "Lightskyblue", 
-                            paper_bgcolor: "Lightskyblue"
+          let layout  = { title : countryName + " Birth Rate"  , 
+                          xaxis : { linecolor: 'black', linewidth: 1, mirror: true },
+                          yaxis : { linecolor: 'black', linewidth: 1, mirror: true },
+                          plot_bgcolor : "Lightskyblue", 
+                          paper_bgcolor: "Lightskyblue"
                           };
           Plotly.newPlot("div12"   ,    barGraph, layout);
         };
@@ -135,10 +126,10 @@ function getCountryCode() {
           j                   = 0;
           countryYears        = [];
           countryPOP          = [];
-          countryPOPG100      = [];
+          countryE01          = [];
           countryF15_T64      = [];
           countryF60_T69      = [];
-          countryE01          = [];
+          countryPOPG100      = [];
           graphTable          = [];
           for (i = 0; i < POPdata.length; i++) {
               Country = POPdata[i].Country;
@@ -161,51 +152,31 @@ function getCountryCode() {
           }
           if (j > 0 ) {
             d3.select("#div14").selectAll("table").remove();
-            tabulate('#div14',graphTable, ['Year', 
-                                            'Population', 
-                                            'POPE01',
-                                            'POPF15_T64',
-                                            'POPF60_T69',
-                                            'POPG100']);
+            tabulate('#div14',graphTable, ['Year', 'Population', 'POPE01', 'POPF15_T64', 'POPF60_T69', 'POPG100']);
             var Population = {
-              x      : countryYears,
-              y      : countryPOP,
-              type   : 'line',
-              mode   : 'lines',
-              name   : 'Population',
-              marker : { color : "lightgreen"}
+              x      : countryYears       , y      : countryPOP,
+              type   : 'line'             , mode   : 'lines',
+              name   : 'Population'       , marker : { color : "lightgreen"}
             };
             var PopulationE01 = {
-              x      : countryYears,
-              y      : countryE01,
-              type   : 'line',
-              mode   : 'lines',
-              name   : 'Population exact 1',
-              marker : { color : "magenta"}
+              x      : countryYears       , y      : countryE01,
+              type   : 'line'             , mode   : 'lines',
+              name   : 'Pop exact 1'      , marker : { color : "magenta"}
             };
             var PopulationF15T64 = {
-              x      : countryYears,
-              y      : countryF15_T64,
-              type   : 'line',
-              mode   : 'lines',
-              name   : 'Population from 15 to 64',
-              marker : { color : "cyan"}
+              x      : countryYears       , y      : countryF15_T64,
+              type   : 'line'             , mode   : 'lines',
+              name   : 'Pop from 15 to 64', marker : { color : "cyan"}
             };
             var PopulationF60T69 = {
-              x      : countryYears,
-              y      : countryF60_T69,
-              type   : 'line',
-              mode   : 'lines',
-              name   : 'Population from 60 to 69',
-              marker : { color : "darkblue"}
+              x      : countryYears       , y      : countryF60_T69,
+              type   : 'line'             , mode   : 'lines',
+              name   : 'Pop from 60 to 69', marker : { color : "darkblue"}
             };
             var PopulationG100 = {
-              x      : countryYears,
-              y      : countryPOPG100,
-              type   : 'line',
-              mode   : 'lines',
-              name   : 'Population over 100',
-              marker : { color : "red"}
+              x      : countryYears       , y      : countryPOPG100,
+              type   : 'line'             , mode   : 'lines',
+              name   : 'Pop over 100'     , marker : { color : "red"}
             };
             var data   = [Population, PopulationE01, PopulationF15T64, PopulationF60T69, PopulationG100] ;
             var layout = {
@@ -223,16 +194,15 @@ function getCountryCode() {
     }
   });
 }
-// Referece Source Code obtained from SlackOverflow
+// Reference Source Code obtained from SlackOverflow
 function tabulate(div,data, columns) {
   var table = d3.select(div).append('table')
   var thead = table.append('thead')
   var tbody = table.append('tbody').style('border', '1px solid #FFFFFF');;
   thead.append('tr').selectAll('th').data(columns).enter().append('th').text(function (column) { return column; });
   var rows = tbody.selectAll('tr').data(data).enter().append('tr');
-  // create a cell in each row for each column
   var cells = rows.selectAll('td').data(function (row) {return columns.map(function (column) {return {column: column, value: row[column]};});}).
-    enter().append('td').text(function (d) { return d.value; }).style('border', '1px solid #FFFFFF');
-    d3.selectAll('td').style('text-align', 'right');
+                   enter().append('td').text(function (d) { return d.value; }).style('border', '1px solid #FFFFFF');
+  d3.selectAll('td').style('text-align', 'right');
   return table;
 }
